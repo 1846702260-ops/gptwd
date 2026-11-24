@@ -39,7 +39,7 @@
 | `ops/bridge/ensure.sh` | 两处 uid 替换、新增 11 行 PROXY_GUARD、删除 8800 实例 | `7ce81b02…566eb` | `bf501e39…444cf` |
 
 - 备份：`ensure.sh.bak.20261125T021931`（切换前）、`ensure.sh.bak.20261125T022427`（收敛前）
-- git：`DIRTY 23 → 24`，仅 `M ops/bridge/ensure.sh` 一项；未提交、未推送
+- git：`DIRTY 23 → 25`；本次新增 `M ops/bridge/ensure.sh` 与两个未跟踪的时间戳备份（`ensure.sh.bak.20261125T021931`、`ensure.sh.bak.20261125T022427`）。`M ops/bridge/server.py` 为变更前既有脏状态（mtime 11-19 10:25，非本次改动，diff 为 54+/5-）。未提交、未推送
 - 未改动：`/root/.wb-switch/accounts.json`（7 个账号原样保留）、`server.py`、`config.json`、`zyagi.env`
 
 ## 三、验证矩阵
