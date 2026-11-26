@@ -1,0 +1,28 @@
+C-Z5.2.0-POSTRELEASE-CFIX-01 · 精简报告（2026-11-26）
+
+【结论】
+附条件通过：D-01、D-02、D-04 已修复并有真实启动路径证据；D-03 代码链路正确，根因判定为生产 config 显式 roleCard:"role.md"（待 Z 核对更正），主人正式确认的《陈知遥 V1.0 人格卡》原文缺失列阻塞交 G，不阻断本批交付。唯一候选已推 Gitee 远端回读一致、干净克隆同树精确吻合；未连生产、未部署、未强推，release/z1.4.7 未动。
+
+【D-01 撤销墓碑根治（A 类）】
+根因与 Z 两次生产复发完全吻合：writeSeal 的 seal.lines 记物理行数（含重复），loadTombstone 却用去重后 map.size+bad 校验；同一令牌经 logout_all、session_rotate、改密重复撤销必产生重复行（生产实证 195/194 与 186/184 两例）→ TOMBSTONE_LINE_COUNT_MISMATCH → tampered → deny-all → 密码登录成功后新会话立即 401。修改前已隔离复现（含全新合法主人令牌被误伤）。修复：校验口径统一为物理行数（历史合法重复记录与旧 seal 自动兼容，Z 已去重的生产数据无需处理）；追加幂等（已存在哈希跳过，并发窗口由口径兜底）；崩溃中断明确为 fail-closed 需受控重签；sha256、缺 seal、坏行、篡改全部保留拒绝。新增 CLI：tombstone-verify（只读，tampered 退出码 9 附处置指引）、tombstone-reseal --accept（自动备份、坏行拒绝、只重签 seal，绝不清空墓碑绝不删凭证）。测试单元 6/6 + 真实启动 E2E 22/22：登录→logout-all→4 轮轮换风暴→改密→重启全程墓碑健康、重复行 0、被撤会话即时失效、新会话稳定访问主人资源、重启后旧 Cookie 仍拒绝、历史重复行在场时新登录不受影响。
+
+【D-02 CLI 数据目录及恢复安全】
+修改前实测从 packages/companion 跑会猜成 packages/companion/packages/companion/data。修复为与服务端同语义：--data-dir > ZY_DATA_DIR > --config/ZY_CONFIG 的 dataDir（相对路径以配置文件所在目录为准）> 仓库默认（脚本位置推导，与 cwd 无关）。六个恢复核验/解锁/检查命令接入前置检查：DATA_DIR_MISSING、AUTH_NOT_INITIALIZED（合法未初始化单独标识）、AUTH_STATE_UNREADABLE（含结构缺 version），明确状态码与非零退出码，不假报恢复安全、不隐式建目录。实测四个 cwd 结果一致、低代际检出、缺锚点 ANCHOR_MISSING、不可写锚点 fail-closed。reset-owner-password 不接入（空目录首次创建 account.json 是其本职，错目录由 A-03 拦截；曾因此误拦 5 项既有测试，已修复复跑 30/30）。实际命令数复核 15 个，以代码为准。手册 06-迁移与回滚.md 新增第 8 节：墓碑检查与受控重签、锁定期与解锁后凭证安全区分、--accept 清账行为（先撤旧会话与通行密钥、推 TOTP 计数再重锚）、独立 KEK 与锚点保护、恢复前凭证轮换要求，并修正"自动生成 totp.key"过时表述。
+
+【D-03 人格实际加载核查（真实启动 E2E 9/9）】
+三件事区分：心核代码已上线（实证）；P1A 资产存在（仓库 role.chenzhiyao.md，persona_version chenzhiyao-v1，配 2026-11-24 C 侧两个 P1A 验收批次）；主人正式确认的 25 题《陈知遥 V1.0 人格卡》已部署——未证实，资料库中 25 题为评价基线，列阻塞交 G 安排 K 专项，不冒充正式落地。Z 生产日志 role.md 根因判定：代码默认已是 P1A 卡且校验告警明示"当前生效卡：role.md（P1A 要求 role.chenzhiyao.md）"，与 Z 日志形态吻合，故生产 config 显式写了 roleCard:"role.md"。真实启动验证：默认配置加载 P1A 卡校验通过；显式旧卡校验不通过（缺版本号并检出旧特征词：大肥鱼、鲸鱼娘、白饭碗、小鲸鱼、女仆装）且告警可见、服务不阻断；卡缺失告警可见；frontmatter 血缘元信息不进提示词。工作档与私聊隔离属既有 P1A 已验收能力，继承证据。
+
+【D-04 全局认证状态与 iPhone PWA 登录】
+根因（Z 截图实证）：WS 层 HUMAN 表缺 auth_required，总览页无 needLogin 分支，裸显"出了点问题 (auth_required)"。修复取统一层：新增 authRedirect.ts 单一入口，HTTP 与 WS 捕获 auth_required 统一跳登录（记住目标页、hash 到 #/auth、广播事件，排除探测路径防循环），HUMAN 补"请先登录。"；App 冷启动探测 V2 已初始化且未认证则全屏登录页，不渲染主界面、圆球与底部导航，登录成功后恢复目标页，网络故障与认证失效区分（不误登出），V2 未启用走旧基线；iPhone 密码显示按钮换行修复（width:100% 挤压按钮，改 flex:1/minWidth:0 + 按钮 nowrap）。不放宽 Origin/CSRF/Cookie 安全策略，不改认证判定与 Cookie 签发；保留邮箱密码、可选 TOTP、离线恢复；Passkey 关闭提示不变。测试新增 6/6，前端全量 354/354，tsc 干净。
+
+【三坐标与发布保护】
+分支 cand/z5-2-0-postrelease-cfix-01，HEAD ddb5521588233a78faee60bf63ada707f0ed84e7，Tree 3016f698d63b83c9d5b423527128703d9839bb21，Parent a526340（生产基线，远端无在途后续修复）。普通 push 回读一致。改动 8 文件 +369/-16 加 3 个测试文件；四处生产热修与分片备份修复、独立 KEK/代际锚点/恢复锁定语义、AUTH V2 旧口令关闭原则、scrypt N=2^16、otplib 13.6.0 全部未动；package-lock 补齐上轮 otplib 声明。
+
+【实际测试与继承】
+实跑：companion 新增 37/37、auth-v2 63/63、security 24 套与 identity 2 套全 0 fail；前端 354/354。继承：S0–S2 备份/生态/忆核等不受影响证据。旧失败（非本轮）：persona-system 8 项（既有基线，stash 对照确认）；worker 文件直接 node --test 失败属测试架构，父测试全过。
+
+【生产影响与回滚】
+部署后主人需重新登录一次（墓碑中旧会话不复活属安全语义）；无数据迁移，历史墓碑自动兼容。最小回滚 = 切回 a526340，但会重新引入 D-01/D-04；回滚不得复活旧凭证或恢复访问口令旁路，回滚时按手册 8.1 检查墓碑。
+
+【Z 接收动作与待决】
+① 复核三坐标与同树；② 按 05 指南隔离复验 D-01/D-02/D-04；③ 核对生产 config 的 roleCard 更正为 P1A 卡，重启后确认日志"人格系统 chenzhiyao-v1 · 陈知遥"且无告警；④ 主人 iPhone Safari/PWA 真机验收（打开→登录→进入→聊天/刷新→会话失效再登录，不以 HTTP 200 或 mock 代替）；⑤ 旧密码经聊天通道问题：根治后由主人在网页更换，不得经聊天传凭证；Authenticator 绑定由主人界面核实；Passkey 真机验证后再启用；⑥ 备份自然运行证据继承。待主人：真机验收与生产部署授权。待 G：正式人格卡原文交付与部署安排。本批收口后恢复主线：正式人格落地→忆核 S3 治理闭环→记忆深化与前端可操作化；不提前宣称正式人格卡已生效或 S3 已完整完成。
