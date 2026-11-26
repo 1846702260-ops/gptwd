@@ -1,0 +1,54 @@
+Z5.2.0 账户迁移与认证启用 · 精简报告
+2026-11-26 ｜ Z 侧执行 ｜ 续接 Z-Z5.2.0-STAGED-RELEASE-01
+
+【一句话结论】
+AUTH V2 已上线并验证通过，旧网页访问口令门禁已关闭、旧账号旁路已下线，主人身份连续未变；过程中发现并修复了一个会让主人全站无法登录的真实缺陷（撤销墓碑计数口径不一致），另有一个运维文档缺陷已修、代码缺陷待 C 修。
+
+【七项裁决逐条】
+1. 邮箱/新密码/ownerId 继承 —— 完成。邮箱 14***@qq.com；ownerId=web_b292f604dd7a 身份连续（未新建主人）；本轮沿用原口令，主人可在网页自行改。
+2. 启用 AUTH V2 → 验证 → 关旧访问口令、移除口令界面 —— 完成。先验证新链路（登录 200、amr=password、state=full）再关门禁；前端 AuthGate 自动切 LoginLive，不回退旧 AccountLogin。
+3. 关闭旧认证旁路、检查 Web/API/长连接/PWA 边界 —— 完成。匿名访问主人资源全 401；WS 匿名 401；旧 /api/web/login 已下线；旧改密口 409（代码层杜绝"网页改 A、登录校验 B"的分裂）。
+4. 保留 Authenticator 自主开启 + 离线恢复凭证 —— 完成。TOTP 界面/接口就绪（主人自助绑定）；离线恢复凭证已签发，主人到生产机本机取走。
+5. iPhone Safari / 主屏 PWA / Passkey 真机验证后启用 —— 按裁决保持关闭，passkey.enabled=false，待真机验证后单独启用。
+6. 核实独立 KEK/代际锚点/恢复机制/运维手册 —— 完成。KEK 独立于 data 目录、keySource=env 无回退；锚点代际 6；恢复机制防旧凭证复活已做隔离演练；手册已修。
+7. 记忆/人格/关系/QQ 身份/主人权限不变 —— 完成。ownerId 未变；people.json 169KB 完好；身份库 178 身份；QQ 配置与数据未动（QQ 侧登录态自 11-24 失效，属既有状态，需重新扫码）。
+
+【关键数字】
+- 边界验证 26 项：25 PASS，1 项为测试断言过严（security/posture 仅回环可达、只返回布尔值，非缺陷）
+- 改密链路 10/10 PASS（临时口令 → 旧口令失效 → 改回原口令 → 临时口令失效）
+- 恢复演练 4 场景全过：旧备份覆盖下旧令牌能解出 owner 身份 0 条；受控解锁撤销旧会话 4 条；解锁后旧凭证未复活
+- 服务 active，NRestarts=0，/health 200、/web/ 200
+- 生产源码变更：仅 1 个文档文件（+15/−8）；数据变更 4 处，均有备份
+
+【本轮发现的缺陷】
+【严重】撤销墓碑计数口径不一致 → 主人全站被拒（deny-all）
+  根因：writeSeal 记"非空行数"，loadTombstone 校验用"去重后计数"。同一令牌被撤销 ≥2 次即误判篡改 → fail-closed 拒绝全部主人身份。改密、会话轮换、退出其他设备都会触发，生产必然发生。
+  处置：生产数据已去重修复（186→184 行），tampered=false；备份 /root/backups/TOMBSTONE-FIX-PRE-01-20261126T084247。代码面待 C 修。
+
+【中】CLI resolveDataDir 猜路径错误 → 回退检测假阳性
+  根因：CLI 按 cwd 猜 dataDir，服务按 config 目录解析，口径不一致。不带 --data-dir 时 auth-verify-restore 读不到 auth.json，锚点被调高也误报"未检测到回退"。影响 11 个 CLI 命令。
+  处置：docs/auth-v2/06 的 8 处示例已补 --data-dir 并加警示；代码面待 C 修。
+
+【低】role.md 缺 persona_version（既有告警，07:41 即出现）—— 单独排期。
+
+【需主人操作（按序）】
+1. 重新登录一次：旧会话无 amr，且本轮测试撤销了其余会话。
+2. 网页安全中心 →「登录邮箱与密码」：改成真邮箱与新口令。改完原口令即刻失效；改密会撤销其他设备会话；之后可清空 env 里的 ZY_WEB_ACCOUNT_PASSWORD（已不参与认证）。
+3. 网页安全中心 →「两步验证」：绑定 Authenticator，扫码后输入 6 位码确认，立即抄下 10 张恢复码。
+4. 取走离线恢复凭证：/root/zyagi/runtime/offline-recovery-20261126T083351.txt（600 root），当前有效指纹 4336cb0f。
+5. QQ 重新扫码登录（napcat 登录态自 11-24 失效，与本轮无关）。
+6. Passkey：iPhone Safari 与主屏 PWA 真机验证通过后再启用。
+
+【凭据暴露面（如实）】
+旧口令由主人经聊天提供（主人主动选择此方式），未落 argv/日志/仓库/报告；本轮未产生新口令。离线恢复凭证签发时我的脱敏正则未覆盖下划线与混合大小写，凭证本体一度出现在会话输出 —— 已重新签发两次使前两版立即失效（服务端只存散列，重签发即覆盖）并删除旧文件，审计仅记 id/actor，全盘 grep 旧凭证命中 0。当前有效的是第三版，指纹 4336cb0f。
+残留：旧口令需主人在网页改密后彻底消除。
+
+【待 C 修复清单】
+D-01（严重）packages/companion/src/lib/revocation-tombstone.mjs —— writeSeal 与 loadTombstone 行数口径统一为去重后计数，或 appendTombstone 追加前去重；保留 tamper 检测；补"同一 hash 撤销 ≥2 次仍 tampered=false"测试
+D-02（中）packages/companion/bin/zyagi-admin.js —— resolveDataDir 优先读 config 的 dataDir（相对 config 目录），与服务侧 rel() 对齐
+D-03（低）packages/companion/role.md —— 补 persona_version
+
+【交付】
+资料库批次：2026-11-26_Z-Z5.2.0-AUTH-MIGRATION-01
+GitHub 脱敏归档：待提交（提交号见双进度记录）
+双进度：Z 侧 + 总进度均已追加
