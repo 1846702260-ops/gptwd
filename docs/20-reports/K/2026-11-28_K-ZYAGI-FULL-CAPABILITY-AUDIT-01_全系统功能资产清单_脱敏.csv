@@ -1,0 +1,79 @@
+﻿编号,能力域,能力名称,源码路径与关键行号,入口,成熟度L0-L5,是否启用,前端入口,可操作,真实使用证据,数据来源,测试证据,建议归属,备注
+P1.1,人格身份,角色卡Role,companion/src/role.js:116,index.js:1428,L4,是,是(/settings间接),是,生产人格卡chenzhiyao-v1.1,Z5.2.2上线记录,persona-system/*,PersonaCore,
+P1.2,人格身份,人格系统PersonaSystem,companion/src/persona/index.js:46/176,index.js:2165,L4,是,是,是,Web+QQ真实对话,联合候选39bd712,persona-system/personacore-v1,PersonaCore,
+P1.3,人格身份,核心人格/情绪/自模型/关系/反思,"companion/src/persona/{core-persona:40,emotion:37,self-model:35,relations:22,reflection:37}",persona/index,L4,是,部分,是,运行时注入上下文,联合候选39bd712,chenzhiyao-persona/identity-lock,PersonaCore/SelfCore,
+P1.4,人格身份,主人解析createOwnerResolver,companion/src/owner-identity.js:21,index.js:81,L4,是,否,否,启动加载,联合候选39bd712,memory/c-a1-owner-identity,PersonaCore,三套之一
+P1.5,人格身份,经验归属OwnerJudge,companion/src/autonomy/ownerIdentity.js:42,autonomy/index,L4,是,否,否,服务端配置,联合候选39bd712,autonomy/c1-identity,PersonaCore/EvoCore,三套之一
+P1.6,人格身份,工具身份resolveIdentity,companion/src/workspace/identity.js:57,toolgate:47,L4,是,否,否,权限门禁,联合候选39bd712,security/identity,PersonaCore/ActionCore,三套之一
+P2.1,对话,统一对话链coreTurn,companion/src/turn.js:164,index.js:4244,L4,是,是(/chat),是,生产真实对话turns43条,Z5.2.2上线记录,memory/s2-mainchain-e2e,MindCore,Web/QQ同一函数
+P2.2,对话,大脑Brain,companion/src/brain.js:257,index.js:1773,L4,是,间接,是,主链生成,联合候选39bd712,chat-extras,MindCore,
+P2.3,多模型,模型注册表createRegistry,companion/src/models.js:269/176,index.js:104,L4,是,是(/models),是,多provider真实调用,联合候选39bd712,web-v1/model-routing,ActionCore/SelfCore,
+P2.4,认知,限域运行时LimitedRuntime,companion/src/cognition/limitedRuntime.js:4,index.js:1644,L2,条件启用,否,部分,web.ownerId条件,联合候选39bd712,cognition/mind-limited-product,MindCore,灵核限域
+P2.5,认知,心智影子MindShadow,companion/src/cognition/mindShadow.js:14,index.js:1646,L2,条件启用,否,否,创建后无消费端,联合候选39bd712,cognition/mind-shadow-contracts,MindCore/SelfCore,影子未接线
+P2.6,对话,召回Recall,companion/src/recall.js:92,index.js:1874,L4,是,部分,是,主链召回,联合候选39bd712,recall-channel-labels,MemCore,
+P2.7,对话,回复摘要replySummary,companion/src/replySummary.js:21/50,brain.js:1695,L4,是,否,否,工具日志合成,联合候选39bd712,autonomy/reply-summary,SelfCore,
+P2.8,API,Web API createWebApi,companion/src/webapi.js:336,index.js:2346,L4,是,是,是,3111端口生产,联合候选39bd712,web-v1/*,基础设施,
+P3.1,记忆,旧记忆Memory,companion/src/memory.js:28,index.js:1396,L4,是,否,否,仍在主链,联合候选39bd712,memory/p0-readwrite,MemCore,四套之一
+P3.2,记忆,MemoryV2,companion/src/workspace/memv2.js:132,wsapi,L4,是,部分,是,生产memv2 6条,Z5.2.2上线记录,memory/memv2-confidence,MemCore,唯一结构化真源主张
+P3.3,记忆,ZCMA MemorySystem,companion/src/workspace/p1/index.js:135,index.js:1568,L4,是,是,是,主链核心,联合候选39bd712,memcore/*,MemCore,
+P3.4,记忆,QQ记忆审阅,companion/src/workspace/p1/qqReview.js,index.js:75,L4,是,部分,是,QQ渠道,联合候选39bd712,memory/qq-review,MemCore/PersonaCore,
+P3.5,记忆,轮次捕获turnCapture,companion/src/workspace/p1/turnCapture.js,index.js:78,L4,是,否,否,onTurnEnd钩子,联合候选39bd712,memory/p4-shadow-turn,MemCore,
+P3.6,记忆,印象Impression,companion/src/impression.js:23,index.js:1798,L4,是,否,否,6条全部source=impression,Z5.2.2上线记录,autonomy/*,MemCore,
+P3.7,记忆,归档/自状态,companion/src/archive.js:31/selfstate.js,index.js:1777,L4,是,否,否,每日归档,联合候选39bd712,memory/s2-archive-atomicity,MemCore/SelfCore,
+P3.8,知识,研究/世界/洞察,"companion/src/workspace/{research:314,world:20,insights:23}",wsapi,L4,是,是(/osint /world),是,API可达,联合候选39bd712,workspace/research-extract,MemCore/MindCore,world称不另建存储
+P3.9,治理,每日备份backupDaily,companion/src/backup.js:161,index.js:1827,L4,是,否,否,生产备份RPO=0,Z5.2.2上线记录,memory/p0-backup,基础设施,
+P4.1,自主,自主底座createAutonomyRuntime,companion/src/autonomy/index.js:192,index.js:2845,L4,是,否,否,装配全子系统,联合候选39bd712,autonomy/c-m2-closedloop,ActionCore,
+P4.2,自主,任务库/规划/执行/子代理,"companion/src/autonomy/{taskStore:106,planner:317,runner:156,subagent:30}",autonomy/index,L4,是,是(/agent),是,长任务执行,联合候选39bd712,p9-task-store,ActionCore,与workspace/tasks双真源
+P4.3,生核,生核EvoCore,companion/src/autonomy/evocore.js:38,autonomy/index:220,L4,已部署但禁用,是(/evocore),受限,enabled=false stopped=true,Z5.2.2上线记录,evocore-flow,EvoCore,60s tick已上线
+P4.4,自主,重型执行器DshExecutor,companion/src/autonomy/dshExecutor.js:271,autonomy/index:271,L1,默认关,否,否,cfg.dsh.enabled未开,联合候选39bd712,dsh-executor/dsh-wiring,ActionCore,半接线
+P4.5,自主,卡住巡检Watchdog,companion/src/autonomy/stuckWatch.js:179,autonomy/index,L4,是,否,否,定时通知,联合候选39bd712,stuck-watch,ActionCore,
+P4.6,自主,任务委派chatDelegate,companion/src/autonomy/chatDelegate.js:158,index.js:2944,L4,是,是(/chat),是,Web/QQ,联合候选39bd712,p11-chat-bridge,ActionCore,
+P4.7,对话,命令handleChatCommand,companion/src/commands.js:35/76,index.js:93,L4,是,部分,是,QQ命令,联合候选39bd712,chat-extras,ActionCore,
+P4.8,自主,事件总线/日记,companion/src/eventbus.js:16/diary.js:43,index.js:1999+CLI,L4,是,部分,是,CLI+服务,联合候选39bd712,security/web-events,SelfCore,
+P4.9,项目,工作区任务/项目/成果,"companion/src/workspace/{tasks:28,projects:15,artifacts:15}",wsapi,L4,是,是(/tasks /projects /artifacts),是,API可达,联合候选39bd712,web-v1/task-cards,ActionCore,与autonomy/taskStore双真源
+P5.1,学徒,技能实验室SkillLab,companion/src/autonomy/skillLab.js:54,autonomy/index,L4,是,是(/skills),是,候选生命周期,联合候选39bd712,p9-learning-skill,EvoCore,
+P5.2,学徒,学校/学习,"companion/src/autonomy/{school:203,learning:69}",autonomy/index,L4,是,是(/school),是,经验沉淀,联合候选39bd712,school/lessons,EvoCore,
+P5.3,技能,标准技能导入SkillMd,companion/src/eco/skill-md.js:236/374,autonomy/index.js:42,L4,是,是,是,运行,联合候选39bd712,eco/skill-md,EvoCore,
+P5.4,技能,MCP协议兼容McpCompat,companion/src/eco/mcp-compat.js:32/213,workspace/mcp.js:26,L4,是,是(/plugins),是,Web API,联合候选39bd712,eco/mcp-compat,EvoCore/ActionCore,
+P5.5,生核,进化实验Lab/Evolution,companion/src/workspace/lab.js:24/202,wsapi,L4,是,是(/lab /evolution),是,API可达,联合候选39bd712,web-v1/school-presets-contract,EvoCore,
+P6.1,主动,主动消息Proactive,companion/src/proactive.js:18,index.js:3392/3403,L4,是,否,否,真实定时四道闸,联合候选39bd712,wake-quiet,SelfCore/ActionCore,
+P6.2,主动,唤醒Waker,companion/src/wake.js:24,index.js:1892,L4,是,否,否,每消息调用,联合候选39bd712,wake-quiet,SelfCore,
+P6.3,主动,忙状态busy,companion/src/busy.js:16,webapi coreTurn,L4,是,否,否,计数,联合候选39bd712,UNKNOWN,ActionCore,
+P6.4,监控,流量/网络质量,"companion/src/{traffic:25,netQuality:17}",index.js:2299,L4,是,部分,否,监控,联合候选39bd712,traffic/net-quality,基础设施,
+P6.5,社交,社交状态/设置,"companion/src/{socialStatus:54,socialSettings:47}",index.js:117,L4,是,是(/social),部分,部分标注未接入,联合候选39bd712,social-settings,PersonaCore,前端2处标未接入
+P6.6,情报,定点抓取/SSRF防护,"companion/src/{netfetch:82,ssrf:118}",image→research,L4,是,间接,是,网络防护,联合候选39bd712,web-v1/v12-research-ssrf,ActionCore,
+P6.7,监控,硬件监控,companion/src/hardware.js,index.js:2290,L4,是,部分(/more),否,监控,联合候选39bd712,hardware/hardware,基础设施,
+P7.1,工具,内置工具Tools,companion/src/tools.js:306,index.js:1878,L4,是,是(/tools),是,主链L0/L1,联合候选39bd712,security/gateway,ActionCore,
+P7.2,工具,工具注册表,packages/tool-registry/index.mjs,toolgate:47,L4,是,部分,否,共享真源,联合候选39bd712,security/registry,ActionCore,
+P7.3,工具,MCP门禁mcp-gate,packages/mcp-gate/gate.mjs:21/142,workspace/mcp.js:21,L4,是,部分,否,签票DENY,联合候选39bd712,security/mcp-gate,ActionCore,
+P7.4,工具,工具网关ToolGateway,companion/src/workspace/toolgate.js:245,wsapi,L4,是,是,是,权限审计,联合候选39bd712,autonomy/c1-real-gateway,ActionCore,
+P7.5,工具,工作区Tools/Agent,"companion/src/workspace/{tools:1074,agent:1274}",wsapi.js:28,L4,是,是(/files),是,API执行,联合候选39bd712,security/gateway,ActionCore,
+P7.6,工具,插件Plugins,companion/src/workspace/plugins.js:107,wsapi,L4,是,是(/plugins),部分,SSE未实现,联合候选39bd712,security/raw-boundary,ActionCore,
+P7.7,工具,Mcp客户端,companion/src/workspace/mcp.js:34,wsapi,L4,是,是(/plugins),是,外部服务,联合候选39bd712,eco/e2e,ActionCore,
+P7.8,工具,phone/qzone/zy MCP,"packages/{phone-mcp,qzone-mcp,zy-tools-mcp}",各自bin,L4,是,否,否,独立进程,联合候选39bd712,zy-tools-mcp/gateway-proxy,ActionCore,
+P7.9,工具,DSH插件,packages/dsh-zhiyao/dsh-plugin.mjs:366,动态import,L2,默认关,否,否,宿主内嵌,联合候选39bd712,dsh-engine/dsh-wiring,ActionCore,
+P7.10,安全,密钥源/凭据扫描,"companion/src/{secretSource:56,security/credscan:23}",webAuthConfig:50,L4,是,否,否,启动,联合候选39bd712,security/p1-web-auth-config,基础设施,
+P7.11,安全,SSRF防护,companion/src/ssrf.js:149/197,image/research,L4,是,否,否,网络防护,联合候选39bd712,web-v1/v10-dns-toctou,基础设施,
+P8.1,权限,认证服务AuthService,companion/src/auth/service.mjs+12子模块,index.js:2048,L4,是,是(/auth),是,密码/TOTP/Passkey,联合候选39bd712,auth-v2/*(13),基础设施,
+P8.2,权限,Web鉴权配置,companion/src/webAuthConfig.js:50,index.js:96,L4,是,否,否,启动,联合候选39bd712,security/p1-web-auth-config,基础设施,
+P8.3,预算,回复预算replyBudget,companion/src/replyBudget.js:49/151/172,index.js:86,L4,是,否,否,主链,联合候选39bd712,reply-budget,基础设施,四套之一
+P8.4,权限,频道注记channelNote,companion/src/channelNote.js:22,index.js:118,L4,是,否,否,多渠道路由,联合候选39bd712,channel-note,基础设施,
+P8.5,权限,权限/审批/敏感,"companion/src/workspace/{permissions:115,approvals:29,sensitive:151}",wsapi/toolgate,L4,是,是(/security),是,分级,联合候选39bd712,autonomy/c1-permission,基础设施,多套判定之一
+P8.6,权限,撤销墓碑/迁移守卫,"companion/src/lib/{revocation-tombstone,migration-guard}.mjs",CLI zyagi-admin,L4,是,否,否,CLI,联合候选39bd712,auth-v2/c-tombstone-idempotent,基础设施,
+P9.1,治理,备份清单/删除账本,"companion/src/workspace/{backupManifest:66,deletionLedger:280}",p1/index,L4,是,否,否,哈希校验,联合候选39bd712,memory/zcma2fix-ledger*,MemCore,
+P9.2,治理,数据迁移migrate,companion/src/workspace/migrate.js:160,CLI zy-migrate,L4,是,否,否,CLI,联合候选39bd712,memory/p0-migrate,MemCore,
+P9.3,监控,健康检查/DB检查,"companion/src/{healthStatus:75,dbcheck:21}",index.js:2321,L4,是,否,否,/health=ok生产,Z5.2.2上线记录,health-status,基础设施,
+P9.4,治理,运维部署脚本,ops/ deploy/ scripts/,shell/CI,L4,是,否,否,门禁9/9,Z5.2.2上线记录,ops/test/*,基础设施,
+P10.1,渠道,QQ OneBot,companion/src/transport-onebot.js:57,index.js:3132,L2,是,否,受限,QQ客户端failed,Z5.2.2上线记录,onebot-ws-api,基础设施,生产QQ未连
+P10.2,渠道,QQ控制,companion/src/qqControls.js:21,index.js:1886,L4,是,否,否,群/禁言,联合候选39bd712,qq-controls,基础设施,
+P10.3,渠道,平台档案,companion/src/platforms.js:27,index.js:114,L4,是,否,否,连接状态,联合候选39bd712,platforms/platforms,基础设施,
+P10.4,渠道,Web会话WebSessions,companion/src/websession.js:194,index.js:2003,L4,是,是(/chat),是,3111生产,联合候选39bd712,web-v1/*,基础设施,多端同步在途E侧
+P10.5,渠道,Qzone开通,packages/qzone/open-zone.mjs,CLI qzone-open,L1,否,否,否,未生产使用,联合候选39bd712,UNKNOWN,基础设施,
+U1,未接线,完整认知链runCognitionChain,"companion/src/cognition/{index:92,chain:64}",仅测试引用,L1,否,否,否,源码注释自证未接主链,联合候选39bd712,cognition/p4-2-hybrid,MindCore,P0接线
+U2,未接线,桌宠鉴权petServiceAuth,companion/src/petServiceAuth.js,零生产引用,L1,否,否,否,仅测试动态import,联合候选39bd712,pet-service-auth,桌宠范围外,桌宠暂不纳入
+U3,未接线,恢复runRestore,companion/src/restore.js:23/62,仅测试,L1,否,否,否,生产走workspace恢复链,联合候选39bd712,memory/p5-backup,MemCore,
+U4,未接线,擦除erasure,companion/src/workspace/p1/erasure.js,仅memcore测试,L1,否,否,否,R1-R9残余未清,联合候选39bd712,memcore/c-s4-erasure,MemCore,
+U5,未接线,可迁移契约portableContract,companion/src/workspace/p1/portableContract.js,仅memcore测试,L1,否,否,否,未接线,联合候选39bd712,memcore/c-s5-independent,MemCore,
+U6,未接线,恢复CLI restoreCli,companion/src/workspace/restoreCli.js,仅测试,L1,否,否,否,executeRestore未接主链,联合候选39bd712,memory/zcma2fix-restore-cli,MemCore,
+U7,未接线,看门狗核心watchdogCore,companion/src/lib/watchdogCore.js,仅测试,L1,否,否,否,未接线,联合候选39bd712,memory/p7-writer-safety,ActionCore,
+U8,未接线,own-life包,packages/own-life/src/own-life.js,独立包仅自测,L1,否,否,否,未接主链,联合候选39bd712,own-life/test,UNKNOWN,
